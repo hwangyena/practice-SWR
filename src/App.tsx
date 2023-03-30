@@ -1,7 +1,5 @@
 import { SWRConfig } from 'swr';
-import Layout from './components/Layout';
-import Post from './components/Post';
-import Profile from './components/Profile';
+import Router from './Router';
 
 function App() {
   return (
@@ -10,10 +8,7 @@ function App() {
         fetcher: (res) => fetch(res).then((res) => res.json()),
       }}
     >
-      <Layout>
-        <Profile />
-        <Post />
-      </Layout>
+      <Router />
     </SWRConfig>
   );
 }
