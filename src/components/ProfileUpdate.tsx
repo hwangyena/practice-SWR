@@ -9,36 +9,42 @@ import {
   Switch,
   TextField,
 } from '@mui/material';
-import { useState } from 'react';
-import useSWRMutation from 'swr/mutation';
-
-const updateUser = (
-  url: string,
-  { arg }: { arg: { name: string; age: number } }
-) =>
-  fetch(url, {
-    method: 'put',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(arg),
-  });
+import { AxiosResponse } from 'axios';
+import { useEffect, useState } from 'react';
+import { SWRMutationConfiguration } from 'swr/mutation';
+import { useUser } from '../apis/user';
 
 type Props = {
   open: boolean;
   onClose: () => void;
+  onUpdateUser: (
+    arg: Profile,
+    options?: SWRMutationConfiguration<AxiosResponse<unknown, unknown>, unknown>
+  ) => void;
 };
 
-const ProfileUpdate = ({ onClose, open }: Props) => {
+const ProfileUpdate = ({ onClose, open, onUpdateUser }: Props) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
-  const [age, setAge] = useState(25);
+  const [active, setActive] = useState(true);
 
-  const { data, trigger } = useSWRMutation('/user', updateUser, {
-    populateCache: (updatedUser, currentUser) => {
-      console.log('updatedUser', updatedUser);
-      console.log('currentUser', currentUser);
-      return updatedUser;
-    },
-  });
+  const { data: user } = useUser();
+
+  useEffect(() => {
+    if (user) {
+      setName(user.name);
+      setDescription(user.description);
+      setActive(user.active);
+    }
+  }, [user]);
+
+  const handleUpdate = () => {
+    onUpdateUser(
+      { name, description, active },
+      { optimisticData: { name, description, active } }
+    );
+    onClose();
+  };
 
   return (
     <Dialog onClose={onClose} open={open}>
@@ -47,13 +53,14 @@ const ProfileUpdate = ({ onClose, open }: Props) => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          minWidth: '300px',
+          minWidth: '400px',
           gap: '10px',
           marginTop: '30px',
         }}
       >
         <TextField
           variant='standard'
+          color='success'
           label='name'
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -61,12 +68,20 @@ const ProfileUpdate = ({ onClose, open }: Props) => {
         <TextField
           variant='standard'
           label='description'
+          color='success'
+          multiline
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
         <FormGroup sx={{ width: 'fit-content' }}>
           <FormControlLabel
-            control={<Switch defaultChecked color='success' />}
+            control={
+              <Switch
+                checked={active}
+                onChange={(e) => setActive(e.target.checked)}
+                color='success'
+              />
+            }
             label='active'
           />
         </FormGroup>
@@ -75,7 +90,7 @@ const ProfileUpdate = ({ onClose, open }: Props) => {
         <Button color='success' variant='text' onClick={onClose}>
           cancel
         </Button>
-        <Button color='success' variant='contained' onClick={onClose}>
+        <Button color='success' variant='contained' onClick={handleUpdate}>
           save
         </Button>
       </DialogActions>

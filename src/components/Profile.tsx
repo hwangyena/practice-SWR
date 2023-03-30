@@ -5,20 +5,30 @@ import {
   CardContent,
   CardMedia,
   Chip,
+  Snackbar,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
-import useSWR from 'swr';
+import { useEffect, useState } from 'react';
+import { useUser, useUserMutation } from '../apis/user';
 import ProfileUpdate from './ProfileUpdate';
 
 const Profile = () => {
-  const { data: user } = useSWR<Profile>('/user');
-
   const [open, setOpen] = useState(false);
+
+  const { data: user } = useUser();
+  const { data, trigger: onUpdateUser, reset } = useUserMutation();
 
   const onToggle = () => {
     setOpen((p) => !p);
   };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      reset();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [data]);
 
   if (!user) {
     return null;
@@ -26,7 +36,7 @@ const Profile = () => {
 
   return (
     <>
-      <Card sx={{ maxWidth: 345 }}>
+      <Card sx={{ width: 350 }}>
         <CardMedia
           sx={{ height: 140 }}
           image='/images/quokka.jpeg'
@@ -51,7 +61,12 @@ const Profile = () => {
           </Button>
         </CardActions>
       </Card>
-      <ProfileUpdate {...{ onClose: onToggle, open }} />
+      <ProfileUpdate {...{ onClose: onToggle, open, onUpdateUser }} />
+      <Snackbar
+        message='업데이트 되었습니다.'
+        open={!!data}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      />
     </>
   );
 };
