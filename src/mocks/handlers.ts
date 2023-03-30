@@ -22,8 +22,9 @@ export const handlers = [
     return res(
       ctx.status(200),
       ctx.json({
-        name: 'admin',
-        age: 20,
+        name: 'Quokka',
+        description:
+          'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Atque reiciendis dicta accusantium deserunt saepe enim, voluptatum quas aut. In iste voluptates rerum nulla vitae numquam quisquam odio natus maiores delectus?',
         active: true,
       })
     );
