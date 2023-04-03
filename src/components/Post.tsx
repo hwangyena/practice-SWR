@@ -3,7 +3,7 @@ import { Box } from '@mui/system';
 
 const Post = () => {
   return (
-    <Container>
+    <>
       <Box
         sx={{
           width: '100%',
@@ -11,7 +11,7 @@ const Post = () => {
           backgroundColor: 'green',
         }}
       />
-    </Container>
+    </>
   );
 };
 

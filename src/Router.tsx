@@ -1,6 +1,6 @@
-import { BrowserRouter, useRoutes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import Layout from './components/Layout';
-import Home from './pages/home';
+import Home from './pages/Home';
 import Login from './pages/Login';
 
 const Router = () => {
@@ -13,11 +13,11 @@ const Router = () => {
           index: true,
           element: <Home />,
         },
-        {
-          path: 'login',
-          element: <Login />,
-        },
       ],
+    },
+    {
+      path: '/login',
+      element: <Login />,
     },
   ]);
 
