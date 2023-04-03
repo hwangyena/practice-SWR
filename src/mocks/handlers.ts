@@ -1,6 +1,6 @@
-// src/mocks/handlers.js
 import { DefaultBodyType, PathParams, rest, RestRequest } from 'msw';
-import { STATUS_CODE, userData } from '../lib/data';
+import { userData } from '../lib/data';
+import { STATUS_CODE } from './status';
 
 let user: Profile = {
   name: '',
