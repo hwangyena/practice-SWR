@@ -1,10 +1,9 @@
 import axios from 'axios';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { fetcher } from '../lib/utils';
 
 export const useUser = () => {
-  return useSWR<Profile>('/user', fetcher);
+  return useSWR<Profile>('/user');
 };
 
 export const useUserMutation = () => {

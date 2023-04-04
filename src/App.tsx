@@ -1,13 +1,10 @@
 import { SWRConfig } from 'swr';
+import { fetcher } from './apis';
 import Router from './Router';
 
 function App() {
   return (
-    <SWRConfig
-      value={{
-        fetcher: (res) => fetch(res).then((res) => res.json()),
-      }}
-    >
+    <SWRConfig value={{ fetcher }}>
       <Router />
     </SWRConfig>
   );

@@ -1,4 +1,4 @@
-import { clearAuth, axiosRequest, setAuth, isErrorResponse } from '.';
+import { axiosRequest, clearAuth, setAuth } from '.';
 
 export const login = async (payload: { id: string; password: string }) => {
   const res = await axiosRequest<Auth>({
@@ -7,19 +7,19 @@ export const login = async (payload: { id: string; password: string }) => {
     params: payload,
   });
 
-  if (!isErrorResponse(res)) {
-    setAuth(res.token);
+  if (res.success) {
+    setAuth(JSON.stringify(res.success.data));
   }
 
   return res;
 };
 
 export const logout = async () => {
-  try {
-    await axiosRequest({ url: '/logout' });
+  const res = await axiosRequest({ url: '/logout' });
 
+  if (res.success) {
     clearAuth();
-  } catch (err) {
-    console.error('err', err);
   }
+
+  return res;
 };

@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { mutate } from 'swr';
 
 const AUTH = 'SWR_AUTH';
@@ -22,34 +22,41 @@ axios.interceptors.request.use((config) => {
   return config;
 });
 
-export const fetcher = (url: string, config: AxiosRequestConfig) => {
-  return axios.get(url, config);
+export const fetcher = async (url: string, config: AxiosRequestConfig) => {
+  try {
+    const res = await axios.get(url, config);
+
+    return res.data;
+  } catch (e) {
+    throw e;
+  }
 };
 
 export const axiosRequest = async <T>(
   axiosConfig: AxiosRequestConfig
-): Promise<T | ErrorResponse> => {
+): Promise<AxiosResponse<T>> => {
   try {
     const res = await axios(axiosConfig);
 
-    if (res.data) {
-      return res.data;
-    }
+    const defaultSuccess: Res<T> = {
+      status: res.status,
+      statusText: res.statusText,
+      data: res.data,
+    };
 
-    throw res;
+    return { success: defaultSuccess, error: null };
   } catch (err) {
-    return (
-      (err as AxiosError<ErrorResponse>).response?.data ?? {
-        code: 'AXIOS_ERROR',
-        message: 'axios error',
-      }
-    );
+    const defaultError = {
+      code: 'AXIOS_ERROR',
+      message: 'axios error',
+    };
+
+    return {
+      success: null,
+      error: (err as AxiosError<ErrorResponse>).response?.data ?? defaultError,
+    };
   }
 };
-
-export const isErrorResponse = (
-  res: ErrorResponse | unknown
-): res is ErrorResponse => !!(res as ErrorResponse).code;
 
 export const clearCache = () =>
   mutate(() => true, undefined, { revalidate: false });

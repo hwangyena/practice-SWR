@@ -31,15 +31,20 @@ const Layout = () => {
 
   const navigate = useNavigate();
 
-  const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) =>
+  const handleOpenMenu = (e: MouseEvent<HTMLButtonElement>) => {
     setMenu(e.currentTarget);
-  const handleCloseMenu = () => setMenu(null);
+  };
+
+  const handleCloseMenu = () => {
+    setMenu(null);
+  };
 
   const handleLogout = async () => {
-    try {
-      await logout();
+    const { success: data } = await logout();
+
+    if (data) {
       navigate('/login');
-    } catch (e) {}
+    }
   };
 
   return (
@@ -71,11 +76,11 @@ const Layout = () => {
             </ListItemIcon>
             Settings
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <LogoutIcon fontSize='small' />
             </ListItemIcon>
-            <ListItemText onClick={handleLogout}>Logout</ListItemText>
+            <ListItemText>Logout</ListItemText>
           </MenuItem>
         </Menu>
       </LayoutHeader>

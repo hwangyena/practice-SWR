@@ -1,7 +1,6 @@
 import { Button, Container, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
-import { isErrorResponse } from '../apis';
 import { login } from '../apis/auth';
 
 export default function Login() {
@@ -17,11 +16,10 @@ export default function Login() {
       return;
     }
 
-    const res = await login({ id, password });
+    const { error } = await login({ id, password });
 
-    console.log('res', res);
-    if (isErrorResponse(res)) {
-      setError(res.message);
+    if (error) {
+      setError(error.message);
       return;
     }
 
@@ -55,6 +53,7 @@ export default function Login() {
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        type='password'
         label='Password'
         color='success'
         size='medium'

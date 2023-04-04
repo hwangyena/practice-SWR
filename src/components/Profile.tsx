@@ -17,6 +17,7 @@ const Profile = () => {
 
   const { data: user } = useUser();
   const { data, trigger: onUpdateUser, reset } = useUserMutation();
+  console.log('user', user);
 
   const onToggle = () => {
     setOpen((p) => !p);

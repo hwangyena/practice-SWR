@@ -3,8 +3,8 @@ import { userData } from '../lib/data';
 import { STATUS_CODE } from './status';
 
 let user: Profile = {
-  name: '',
-  description: '상태를 적어주세요.',
+  name: 'name',
+  description: 'write down yourself.',
   active: true,
 };
 
@@ -15,7 +15,8 @@ const getData = async (
 };
 
 export const handlers = [
-  rest.get('/user', (req, res, ctx) => {
+  // User
+  rest.get('/user', (_, res, ctx) => {
     return res(ctx.status(200), ctx.json(user));
   }),
 
@@ -35,6 +36,7 @@ export const handlers = [
     );
   }),
 
+  // Auth
   rest.get('/login', async (req, res, ctx) => {
     const id = req.url.searchParams.get('id');
     const password = req.url.searchParams.get('password');
@@ -61,13 +63,11 @@ export const handlers = [
       );
     }
 
-    user = { ...user, name: id ?? '' };
-
     return res(
       ctx.status(200),
       ctx.json({
         token: 'test_token',
-        name: id,
+        ...user,
       })
     );
   }),
@@ -75,6 +75,11 @@ export const handlers = [
   rest.get('/logout', (req, res, ctx) => {
     console.log('req', req.headers);
 
+    return res(ctx.status(200));
+  }),
+
+  // Post
+  rest.get('/posts', async (req, res, ctx) => {
     return res(ctx.status(200));
   }),
 ];
